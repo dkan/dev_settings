@@ -2,8 +2,6 @@ alias ls='ls -aFG'
 alias pg='postgres -D /usr/local/var/postgres'
 alias redis='redis-server /usr/local/etc/redis.conf'
 alias elasticsearch='elasticsearch -f -D es.config=/usr/local/opt/elasticsearch/config/elasticsearch.yml'
-alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
-alias gopath='cd ~/Documents/Development/golang/src/github.com/scriptdash/services'
 alias grep='grep -n --color'
 alias deletemerged='git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d'
 
