@@ -118,6 +118,8 @@ let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \   'ruby': ['rubocop'],
 \ }
+highlight ALEWarning ctermbg=none cterm=undercurl
+highlight ALEError ctermbg=none cterm=undercurl
 
 " js filetypes
 let g:flow#enable = 0
