@@ -49,3 +49,4 @@ PS1="$GREEN\$(date +%H:%M) \w$YELLOW \$(parse_git_branch)$LIGHT_GRAY \$ "
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
