@@ -111,7 +111,7 @@ map <C-k> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
 nnoremap <leader>f :Find <C-R><C-W><CR>
 
-inoremap <leader>df <Esc>:w<CR>
+inoremap <leader>df <Esc>
 
 " ale
 let g:ale_sign_column_always = 1
