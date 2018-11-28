@@ -109,6 +109,9 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 map <C-j> :cnext<CR>
 map <C-k> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
+nnoremap <leader>f :Find <C-R><C-W><CR>
+
+inoremap <leader>df <Esc>:w<CR>
 
 " ale
 let g:ale_sign_column_always = 1
