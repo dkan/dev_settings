@@ -16,6 +16,12 @@ vim +PlugUpdate +PlugClean +qall
 // install home-brew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+// install vim
+brew install vim --with-luajit
+
+// install postgres
+brew install postgres
+
 // install fzf
 brew install fzf
 
