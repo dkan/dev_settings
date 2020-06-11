@@ -1,31 +1,37 @@
 call plug#begin('~/.vim/plugged')
+" editor ui
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'preservim/nerdtree'
+" file find and search
+Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+" functionality
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-commentary'
 Plug 'jiangmiao/auto-pairs'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'Shougo/neocomplete.vim'
+" linting/fixing
+Plug 'dense-analysis/ale'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 " syntax highlighting
-Plug 'w0rp/ale'
-Plug 'fatih/vim-go'
 Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-rails'
 Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'flowtype/vim-flow'
-" removed until it is fixed to not have mem errors
-" Plug 'fleischie/vim-styled-components'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+" Plug 'ap/vim-css-color'
 " colorscheme
 Plug 'mhartington/oceanic-next'
-" mark down
-Plug 'suan/vim-instant-markdown'
 call plug#end()
 
 syntax on
+
+set termguicolors
 colorscheme OceanicNext
 
 set swapfile
@@ -35,12 +41,19 @@ set backupdir=~/.vim/.backup//
 set directory=~/.vim/.swp//
 set history=1000
 
-set mouse=a
-set relativenumber
-set number
+" styled-components syntax highlighting from start
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+
+let mapleader = "\\"
+
 set nocompatible
+
+set mouse=a
+set number
 set backspace=indent,eol,start
-set scrolloff=5
+set scrolloff=3
+
 set hlsearch
 set incsearch                   " Find as you type search
 
@@ -58,91 +71,35 @@ set splitright
 set splitbelow
 set ttyfast
 
-set regexpengine=1 " set to old regexp engine, seems much faster
-
-let g:airline_theme='dark'
-
-" browser
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-
-" fzf
-nnoremap <C-p> :FZF<CR>
-nnoremap <C-c> :Commits<CR>
-nnoremap <C-b> :BCommits<CR>
-nnoremap <C-f> :Find<SPACE>
-
-" --column: Show column number
-" --line-number: Show line number
-" --no-heading: Do not show file headings in results
-" --fixed-strings: Search term as a literal string
-" --ignore-case: Case insensitive search
-" --no-ignore: Do not respect .gitignore, etc...
-" --hidden: Search hidden files and folders
-" --follow: Follow symlinks
-" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-" --color: Search color options
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
-
-" neocomplete
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#enable_smart_case = 1
-inoremap <expr> <c-j> ("\<C-n>")
-inoremap <expr> <c-k> ("\<C-p>")
-
-" tab instead of ctrl n
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
-endfunction
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-
-" " better grep
-" command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
-" vnoremap <leader>g y:Ggr <C-R>0<CR>
-" autocmd QuickFixCmdPost *grep* cwindow
-" nnoremap <C-f> :Ggr<SPACE>
-
-map <C-j> :cnext<CR>
-map <C-k> :cprevious<CR>
-nnoremap <leader>a :cclose<CR>
-nnoremap <leader>f :Find <C-R><C-W><CR>
-
-inoremap <leader>df <Esc>
-
 " ale
 let g:ale_sign_column_always = 1
 let g:jsx_ext_required = 0
-let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
+\   'javascript': ['prettier', 'eslint'],
 \   'ruby': ['rubocop'],
+\   'typescript': ['prettier', 'tslint', 'eslint'],
+\   'typescript.tsx': ['prettier', 'tslint', 'eslint'],
 \ }
+" let g:ale_fix_on_save = 1
+nnoremap <leader>w :ALEFix<CR>
 highlight ALEWarning ctermbg=none cterm=undercurl
 highlight ALEError ctermbg=none cterm=undercurl
 
-" js filetypes
-let g:flow#enable = 0
-let g:flow#omnifunc = 0
-let g:javascript_plugin_flow = 1
+" let g:ale_completion_enabled = 1
+" set completeopt=noselect,noinsert
+" inoremap <expr> <c-j> ("\<C-n>")
+" inoremap <expr> <c-k> ("\<C-p>")
 
-au FileType javascript.jsx nmap <Leader>dd :FlowJumpToDef<CR>
-au FileType javascript nmap <Leader>dd :FlowJumpToDef<CR>
+" javascript
+au FileType javascript nmap <leader>dd :ALEGoToDefinition<CR>
+au FileType javascript.jsx nmap <leader>dd :ALEGoToDefinition<CR>
 
-" Use locally installed flow
-let local_flow = finddir('node_modules', '.;') . '/.bin/flow'
-if matchstr(local_flow, "^\/\\w") == ''
-  let local_flow= getcwd() . "/" . local_flow
-endif
-if executable(local_flow)
-  let g:flow#flowpath = local_flow
-endif
+" typescript
+au FileType typescript nmap <leader>dd :ALEGoToDefinition<CR>
+au FileType typescript.tsx nmap <leader>dd :ALEGoToDefinition<CR>
 
 " ruby filetypes
-au FileType ruby nmap <leader>r "%p
+au FileType ruby nmap <leader>dd gf
 
 " go filetypes
 let g:go_fmt_command = "goimports"
@@ -170,25 +127,47 @@ au FileType go set noexpandtab
 " sql formatting
 au FileType sql set expandtab
 
-" strip whitespace
-fun! <SID>StripTrailingWhitespaces()
-  let l = line(".")
-  let c = col(".")
-  %s/\s\+$//e
-  call cursor(l, c)
-endfun
+" fzf
+nnoremap <C-p> :Files<CR>
+command! -bang -nargs=* Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+nnoremap <C-c> :Commits<CR>
+nnoremap <C-c>b :BCommits<CR>
 
-" multiple cursor fix for neocomplete
-function! Multiple_cursors_before()
-  if exists(':NeoCompleteLock')==2
-    exe 'NeoCompleteLock'
-  endif
-endfunction
+nnoremap <C-b> :Buffers<CR>
+command! -bang -nargs=* Buffers call fzf#vim#buffers(<q-args>, fzf#vim#with_preview(), <bang>0)
+nnoremap <C-h> :History<CR>
+nnoremap <leader>/ :History/<CR>
 
-function! Multiple_cursors_after()
-  if exists(':NeoCompleteUnlock')==2
-    exe 'NeoCompleteUnlock'
-  endif
-endfunction
+nnoremap <C-f> :Find<SPACE>
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+" color fzf buffer to color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+let g:fzf_preview_window = 'down:40%'
+
+map <C-j> :cnext<CR>
+map <C-k> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
+nnoremap <leader>f :Find <C-R><C-W><CR>
+
+" nerdtree
+map <leader>n :NERDTreeToggle<CR>
+map <leader>m :NERDTreeFind<CR>
+let g:NERDTreeWinSize=50
+let NERDTreeShowHidden=1
+let NERDTreeMapOpenSplit='s'
+let NERDTreeMapOpenVSplit='v'
