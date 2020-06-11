@@ -13,10 +13,14 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-commentary'
 Plug 'jiangmiao/auto-pairs'
 Plug 'terryma/vim-multiple-cursors'
-" linting/fixing
-Plug 'dense-analysis/ale'
+" auto complete
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+" linting/fixing
+Plug 'dense-analysis/ale'
 " syntax highlighting
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
@@ -80,15 +84,19 @@ let g:ale_fixers = {
 \   'typescript': ['prettier', 'tslint', 'eslint'],
 \   'typescript.tsx': ['prettier', 'tslint', 'eslint'],
 \ }
-" let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 1
 nnoremap <leader>w :ALEFix<CR>
 highlight ALEWarning ctermbg=none cterm=undercurl
 highlight ALEError ctermbg=none cterm=undercurl
 
-" let g:ale_completion_enabled = 1
-" set completeopt=noselect,noinsert
-" inoremap <expr> <c-j> ("\<C-n>")
-" inoremap <expr> <c-k> ("\<C-p>")
+let g:ale_completion_enabled = 1
+set completeopt=noselect,noinsert
+inoremap <expr> <c-j> ("\<C-n>")
+inoremap <expr> <c-k> ("\<C-p>")
+
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " javascript
 au FileType javascript nmap <leader>dd :ALEGoToDefinition<CR>
@@ -131,7 +139,7 @@ au FileType sql set expandtab
 nnoremap <C-p> :Files<CR>
 command! -bang -nargs=* Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-nnoremap <C-c> :Commits<CR>
+nnoremap <C-c>c :Commits<CR>
 nnoremap <C-c>b :BCommits<CR>
 
 nnoremap <C-b> :Buffers<CR>

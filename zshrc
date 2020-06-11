@@ -28,25 +28,26 @@ export PATH=$PATH:$GOPATH/bin
 export HISTCONTROL=ignorespace
 export HISTFILESIZE=1000000000
 export HISTSIZE=1000000
-shopt -s histappend
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 function parse_git_branch {
         git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-RED="\[\033[0;31m\]"
-YELLOW="\[\033[0;33m\]"
-GREEN="\[\033[0;32m\]"
-WHITE="\[\033[0;1m\]"
-LIGHT_GRAY="\[\033[0;37m\]"
-PURPLE="\[\033[0;35m\]"
-BLUE="\[\033[0;34m\]"
+autoload -Uz vcs_info
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+setopt prompt_subst
+zstyle ':vcs_info:git:*' formats '%F{yellow}(%b)%f '
+zstyle ':vcs_info:*' enable git
 
-PS1="$GREEN\$(date +%H:%M) \w$YELLOW \$(parse_git_branch)$LIGHT_GRAY \$ "
+PROMPT='%F{white}%T %F{green}%0~%f ${vcs_info_msg_0_}%# '
 
 [[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

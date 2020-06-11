@@ -1,0 +1,59 @@
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+curl -Lo ~/.vimrc \
+    https://raw.githubusercontent.com/dkan/dev_settings/master/vimrc
+
+curl -Lo ~/.zshrc \
+    https://raw.githubusercontent.com/dkan/dev_settings/master/zshrc
+
+curl -Lo ~/.gitconfig \
+    https://raw.githubusercontent.com/dkan/dev_settings/master/gitconfig
+
+mkdir -p ~/.vim/{.undo,.backup,.swp}
+vim +PlugUpdate +PlugClean +qall
+
+# install home-brew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+# install vim
+brew install vim
+pip3 install --user pynvim
+
+# install postgres
+brew install postgres
+
+# install fzf
+brew install fzf
+$(brew --prefix)/opt/fzf/install
+
+# install ripgrep
+brew install ripgrep
+
+# install npm
+brew install npm
+
+# install heroku cli
+brew tap heroku/brew && brew install heroku
+
+# install expo-cli
+npm install -g expo-cli
+
+# install rvm
+\curl -sSL https://get.rvm.io | bash -s stable
+
+# iTerm2 settings set up
+# Set backup
+
+# Go to Preferences > General.
+# Enable Load preferences from a custom folder or URL
+
+# Click Browse and select a dev_settings
+# Click Save Settings to Folder
+
+# Set read
+
+# Go to Preferences > General.
+# Enable Load preferences from dev_settings
+
+# Click Browse and select the folder that contains your exported preferences.
